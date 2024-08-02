@@ -17,7 +17,7 @@ interface ChronoSection {
 
 async function fetchChronoTimetable(id: string) {
   const response = await fetch(
-    `https://justcors.com/tl_b604d55/https://www.chrono.crux-bphc.com/api/timetable/${id}`,
+    `https://www.chrono.crux-bphc.com/api/timetable/${id}`,
   );
   const data = await response.json();
   return data as {
@@ -68,6 +68,7 @@ function generateSectionEvent(section: ChronoSection) {
 }
 
 function App() {
+  /** the timetable slug id used in the url */
   const [timetableId, setTimetableId] = createSignal("");
 
   async function generate() {
