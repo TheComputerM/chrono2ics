@@ -1,12 +1,12 @@
 import * as ics from "ics";
-import { Center, Container, Stack } from "styled-system/jsx";
-import { Heading } from "./components/ui/heading";
-import { Button } from "./components/ui/button";
-import { Input } from "./components/ui/input";
-import { FormLabel } from "./components/ui/form-label";
 import { createSignal } from "solid-js";
-import { Text } from "./components/ui/text";
+import { Center, Container, Stack } from "styled-system/jsx";
+import { Button } from "./components/ui/button";
+import { FormLabel } from "./components/ui/form-label";
+import { Heading } from "./components/ui/heading";
+import { Input } from "./components/ui/input";
 import { Link } from "./components/ui/link";
+import { Text } from "./components/ui/text";
 
 interface ChronoSection {
   id: string;
@@ -21,6 +21,7 @@ async function fetchChronoTimetable(id: string) {
   );
   const data = await response.json();
   return data as {
+    name: string;
     sections: ChronoSection[];
   };
 }
@@ -73,7 +74,6 @@ function App() {
     const timetable = await fetchChronoTimetable(timetableId());
     const events = timetable.sections.map(generateSectionEvent).flat();
     const { value } = ics.createEvents(events);
-
     console.log(value);
   }
 
@@ -81,10 +81,14 @@ function App() {
     <Center height="100svh">
       <Container>
         <Stack gap="6" align="center">
-          <Heading as="h1" textStyle="6xl" textAlign="center">
+          <Heading
+            as="h1"
+            textStyle={{ sm: "6xl", base: "5xl" }}
+            textAlign="center"
+          >
             Chrono2ICS
           </Heading>
-          <Stack gap="1.5" width="sm">
+          <Stack gap="1.5" width={{ md: "sm" }}>
             <FormLabel>ChronoFactorem Timetable URL</FormLabel>
             <Input
               placeholder="chrono.crux-bphc.com/view/..."
@@ -99,7 +103,7 @@ function App() {
             />
           </Stack>
           <Button onClick={generate}>Generate ICS</Button>
-          <Text color="fg.subtle">
+          <Text color="fg.subtle" textAlign="center">
             The ICS file can be imported into popular calendar services such as{" "}
             <Link
               target="_blank"
