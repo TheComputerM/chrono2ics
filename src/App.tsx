@@ -75,7 +75,17 @@ function App() {
     const timetable = await fetchChronoTimetable(timetableId());
     const events = timetable.sections.map(generateSectionEvent).flat();
     const { value } = ics.createEvents(events);
-    console.log(value);
+    const a = document.createElement("a");
+    const url = window.URL.createObjectURL(
+      new Blob([value!], { type: "text/ics" }),
+    );
+    a.setAttribute("download", `${timetable.name}.ics`);
+    a.setAttribute("href", url);
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
   }
 
   return (
