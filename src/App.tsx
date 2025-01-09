@@ -53,7 +53,7 @@ function generateSectionEvent(section: ChronoSection) {
 		const [course, classroom, day, slot] = info.split(":");
 
 		const startDate = new Date(dayDefaultTimes[dayIndexMap[day]]);
-		startDate.setHours(parseInt(slot) + 7);
+		startDate.setHours(Number.parseInt(slot) + 7);
 		return {
 			title: `${course} ${section.type}${section.number}`,
 			location: classroom,
@@ -92,11 +92,13 @@ function App() {
 
 	async function generate() {
 		const timetable = await fetchChronoTimetable(timetableId());
-		const events = timetable.sections.map(generateSectionEvent).flat();
+		const events = timetable.sections.flatMap(generateSectionEvent);
 		const { value } = ics.createEvents(events);
+    if (!value) throw new Error("Failed to generate ICS file");
+
 		const a = document.createElement("a");
 		const url = window.URL.createObjectURL(
-			new Blob([value!], { type: "text/ics" }),
+			new Blob([value], { type: "text/ics" }),
 		);
 		a.setAttribute("download", `${timetable.name}.ics`);
 		a.setAttribute("href", url);
