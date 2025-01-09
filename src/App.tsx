@@ -1,5 +1,5 @@
 import { createSignal } from "solid-js";
-import { Center, Container, Stack } from "styled-system/jsx";
+import { Center, Container, HStack, Stack } from "styled-system/jsx";
 import { Button } from "./components/ui/button";
 import { FormLabel } from "./components/ui/form-label";
 import { Heading } from "./components/ui/heading";
@@ -27,6 +27,20 @@ const CalendarIcon = () => (
 		/>
 	</svg>
 );
+
+const Footer = () => {
+	return (
+		<Container position="absolute" bottom="4" insetX="0">
+			<HStack justify="space-between">
+				<Text>
+					Made by{" "}
+					<Link href="https://github.com/TheComputerM">TheComputerM</Link>
+				</Text>
+				<Link href="https://github.com/TheComputerM/chrono2ics">GitHub</Link>
+			</HStack>
+		</Container>
+	);
+};
 
 function App() {
 	/** the timetable slug id used in the url */
@@ -107,6 +121,7 @@ function App() {
 					</Text>
 				</Stack>
 			</Container>
+			<Footer />
 		</Center>
 	);
 }
