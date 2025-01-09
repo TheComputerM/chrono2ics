@@ -13,5 +13,6 @@ export async function fetchChronoTimetable(id: string) {
 	return data as {
 		name: string;
 		sections: ChronoSection[];
+    examTimes: string[];
 	};
 }
