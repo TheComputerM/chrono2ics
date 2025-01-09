@@ -1,4 +1,3 @@
-import * as ics from "ics";
 import { createSignal } from "solid-js";
 import { Center, Container, Stack } from "styled-system/jsx";
 import { Button } from "./components/ui/button";
@@ -8,7 +7,7 @@ import { Input } from "./components/ui/input";
 import { Link } from "./components/ui/link";
 import { Text } from "./components/ui/text";
 import { fetchChronoTimetable } from "./lib/chrono";
-import { generateSectionEvent } from "./lib/generator";
+import { generateICS } from "./lib/generator";
 
 const CalendarIcon = () => (
 	<svg
@@ -36,7 +35,7 @@ function App() {
 	function download(value: string, name: string) {
 		const a = document.createElement("a");
 		const url = window.URL.createObjectURL(
-			new Blob([value], { type: "text/ics" }),
+			new Blob([value], { type: "text/calendar" }),
 		);
 		a.setAttribute("download", name);
 		a.setAttribute("href", url);
@@ -49,11 +48,9 @@ function App() {
 
 	async function generate() {
 		const timetable = await fetchChronoTimetable(timetableId());
-		const events = timetable.sections.flatMap(generateSectionEvent);
-		const { value } = ics.createEvents(events);
-		if (!value) throw new Error("Failed to generate ICS file");
+		const ics = await generateICS(timetable);
 
-		download(value, `${timetable.name}.ics`);
+		download(ics, `${timetable.name}.ics`);
 	}
 
 	return (
