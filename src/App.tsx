@@ -7,65 +7,8 @@ import { Heading } from "./components/ui/heading";
 import { Input } from "./components/ui/input";
 import { Link } from "./components/ui/link";
 import { Text } from "./components/ui/text";
-
-interface ChronoSection {
-	id: string;
-	type: string;
-	number: number;
-	roomTime: string[];
-}
-
-async function fetchChronoTimetable(id: string) {
-	const response = await fetch(
-		`https://www.chrono.crux-bphc.com/api/timetable/${id}`,
-	);
-	const data = await response.json();
-	return data as {
-		name: string;
-		sections: ChronoSection[];
-	};
-}
-
-const dayIndexMap: Record<string, number> = {
-	S: 0,
-	M: 1,
-	T: 2,
-	W: 3,
-	Th: 4,
-	F: 5,
-	Sa: 6,
-};
-
-/** Stores Date objects for every day in the next week starting from today */
-const dayDefaultTimes = Array(7).fill(null);
-const tempDate = new Date();
-tempDate.setHours(0);
-tempDate.setMinutes(0);
-tempDate.setSeconds(0);
-tempDate.setMilliseconds(0);
-for (let i = 1; i <= 7; i++) {
-	dayDefaultTimes[tempDate.getDay()] = new Date(tempDate);
-	tempDate.setDate(tempDate.getDate() + 1);
-}
-
-function generateSectionEvent(section: ChronoSection) {
-	return section.roomTime.map((info) => {
-		const [course, classroom, day, slot] = info.split(":");
-
-		const startDate = new Date(dayDefaultTimes[dayIndexMap[day]]);
-		startDate.setHours(Number.parseInt(slot) + 7);
-		return {
-			title: `${course} ${section.type}${section.number}`,
-			location: classroom,
-			recurrenceRule: "FREQ=WEEKLY",
-			productId: "thecomputerm/chrono2ics",
-			start: startDate.getTime(),
-			duration: {
-				hours: 1,
-			},
-		};
-	});
-}
+import { fetchChronoTimetable } from "./lib/chrono";
+import { generateSectionEvent } from "./lib/generator";
 
 const CalendarIcon = () => (
 	<svg
@@ -90,23 +33,27 @@ function App() {
 	/** the timetable slug id used in the url */
 	const [timetableId, setTimetableId] = createSignal("");
 
-	async function generate() {
-		const timetable = await fetchChronoTimetable(timetableId());
-		const events = timetable.sections.flatMap(generateSectionEvent);
-		const { value } = ics.createEvents(events);
-    if (!value) throw new Error("Failed to generate ICS file");
-
+	function download(value: string, name: string) {
 		const a = document.createElement("a");
 		const url = window.URL.createObjectURL(
 			new Blob([value], { type: "text/ics" }),
 		);
-		a.setAttribute("download", `${timetable.name}.ics`);
+		a.setAttribute("download", name);
 		a.setAttribute("href", url);
 		a.style.display = "none";
 		document.body.appendChild(a);
 		a.click();
 		document.body.removeChild(a);
 		window.URL.revokeObjectURL(url);
+	}
+
+	async function generate() {
+		const timetable = await fetchChronoTimetable(timetableId());
+		const events = timetable.sections.flatMap(generateSectionEvent);
+		const { value } = ics.createEvents(events);
+		if (!value) throw new Error("Failed to generate ICS file");
+
+		download(value, `${timetable.name}.ics`);
 	}
 
 	return (
@@ -134,7 +81,9 @@ function App() {
 							}
 						/>
 					</Stack>
-					<Button onClick={generate}><CalendarIcon /> Generate ICS</Button>
+					<Button onClick={generate}>
+						<CalendarIcon /> Generate ICS
+					</Button>
 					<Text color="fg.subtle" textAlign="center">
 						The ICS file can be imported into popular calendar services such as{" "}
 						<Link
