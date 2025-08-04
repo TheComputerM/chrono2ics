@@ -1,4 +1,4 @@
 export async function POST(request: Request) {
-  const { id } = await request.json();
-  return new Response(`ID is ${id}`);
+	const { id } = await request.json();
+	return await fetch(`https://www.chrono.crux-bphc.com/api/timetable/${id}`);
 }
