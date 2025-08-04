@@ -27,10 +27,6 @@ function getMidsemExclusionTimes(examTimes: string[]) {
 		[new Date(2077, 1), new Date(2020, 1)] satisfies [Date, Date],
 	);
 
-	// CHRONO BUG: exams are listed as 2024, but they are actually in 2025
-	output[0].setFullYear(2025);
-	output[1].setFullYear(2025);
-
 	return output;
 }
 
@@ -48,9 +44,6 @@ function getCompreStart(examTimes: string[]) {
 
 		return acc;
 	}, new Date(2077, 1));
-
-	// CHRONO BUG: exams are listed as 2024, but they are actually in 2025
-	output.setFullYear(2025);
 
 	return output;
 }
