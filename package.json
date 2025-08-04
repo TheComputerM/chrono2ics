@@ -10,17 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ark-ui/solid": "^4.8.0",
-    "@fontsource-variable/outfit": "^5.1.1",
+    "@ark-ui/solid": "^4.10.2",
+    "@fontsource-variable/outfit": "^5.2.6",
     "ics": "^3.8.1",
-    "solid-js": "^1.9.4"
+    "solid-js": "^1.9.7"
   },
   "devDependencies": {
-    "@pandacss/dev": "^0.51.1",
+    "@pandacss/dev": "^0.54.0",
     "@park-ui/panda-preset": "^0.43.1",
-    "typescript": "^5.7.3",
-    "vite": "^5.4.11",
-    "vite-plugin-solid": "^2.11.0",
+    "typescript": "^5.9.2",
+    "vite": "^7.0.6",
+    "vite-plugin-solid": "^2.11.8",
     "vite-tsconfig-paths": "^5.1.4"
   },
   "packageManager": "^bun@1.1.40"
